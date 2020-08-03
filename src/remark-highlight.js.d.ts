@@ -1,0 +1,14 @@
+declare module 'remark-rehype'
+declare module 'rehype-highlight'
+declare module 'rehype-react'
+declare module 'rehype-raw'
+declare module 'highlight.js/lib/highlight';
+declare module 'highlight.js/lib/languages/javascript';
+declare module 'highlight.js/lib/languages/scala'
+declare module 'highlight.js/lib/languages/bash'
+declare module 'highlight.js/lib/languages/json'
+declare module 'highlight.js/lib/languages/shell'
+declare module 'highlight.js/lib/languages/typescript'
+declare module 'highlight.js/lib/languages/python'
+declare module 'highlight.js/lib/languages/xml'
+declare module 'highlight.js/lib/languages/http'
