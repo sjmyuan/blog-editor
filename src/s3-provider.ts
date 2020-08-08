@@ -29,7 +29,7 @@ export default class AWSS3Provider implements StorageProvider {
 	 * Initialize Storage with AWS configurations
 	 * @param {Object} config - Configuration object for storage
 	 */
-  constructor(config?: StorageOptions) {
+  constructor(providerName:string, config?: StorageOptions) {
     this._config = config ? config : {};
   }
 
@@ -304,31 +304,33 @@ export default class AWSS3Provider implements StorageProvider {
 	 * @private
 	 */
   private _prefix(config: any) {
-    const {credentials, level} = config;
+    //all user will use the same prefix
+    return '/';
+    //const {credentials, level} = config;
 
-    const customPrefix = config.customPrefix || {};
-    const identityId = config.identityId || credentials.identityId;
-    const privatePath =
-      (customPrefix.private !== undefined ? customPrefix.private : 'private/') +
-      identityId +
-      '/';
-    const protectedPath =
-      (customPrefix.protected !== undefined
-        ? customPrefix.protected
-        : 'protected/') +
-      identityId +
-      '/';
-    const publicPath =
-      customPrefix.public !== undefined ? customPrefix.public : 'public/';
+    //const customPrefix = config.customPrefix || {};
+    //const identityId = config.identityId || credentials.identityId;
+    //const privatePath =
+      //(customPrefix.private !== undefined ? customPrefix.private : 'private/') +
+      //identityId +
+      //'/';
+    //const protectedPath =
+      //(customPrefix.protected !== undefined
+        //? customPrefix.protected
+        //: 'protected/') +
+      //identityId +
+      //'/';
+    //const publicPath =
+      //customPrefix.public !== undefined ? customPrefix.public : 'public/';
 
-    switch (level) {
-      case 'private':
-        return privatePath;
-      case 'protected':
-        return protectedPath;
-      default:
-        return publicPath;
-    }
+    //switch (level) {
+      //case 'private':
+        //return privatePath;
+      //case 'protected':
+        //return protectedPath;
+      //default:
+        //return publicPath;
+    //}
   }
 
 	/**

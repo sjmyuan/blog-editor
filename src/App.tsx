@@ -1,5 +1,4 @@
-import React, {useEffect} from 'react';
-import TagPage from './components/tag-page'
+import React from 'react';
 import HomePage from './components/home-page'
 import {useAppState, AppContext, AWSServerApi} from './types'
 import {BrowserRouter as Router, Route} from "react-router-dom"
@@ -21,13 +20,9 @@ Amplify.configure(awsConfig);
 
 const App: React.FC = () => {
   const context = useAppState(AWSServerApi())
-  useEffect(() => {
-    context.actions.loadContext()
-  }, [])
   return (
     <AppContext.Provider value={context}>
       <Router>
-        <Route path='/tag/:tagId' exact render={(props) => (<TagPage tagId={props.match.params.tagId} />)} />
         <Route path='/' exact component={HomePage} />
       </Router>
     </AppContext.Provider>
