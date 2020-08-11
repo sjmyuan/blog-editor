@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
     "@types/chrome": "^0.0.89",
     "@types/mermaid": "^8.2.1",
     "@types/react-resize-detector": "^4.0.2",

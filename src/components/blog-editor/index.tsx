@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components'
-import Tags from '../tags-editor'
-import {turndownServie, NoteContext, TagDetail, useAppContext} from '../../types'
+import {turndownServie, useAppContext, BlogDetail} from '../../types'
 import uuidv4 from 'uuid/v4'
 
-const NoteContainer = styled.div`
+const BlogContainer = styled.div`
     flex-grow: 1;
     display: flex;
     align-items: stretch;
@@ -18,7 +17,7 @@ const NoteContainer = styled.div`
     overflow-wrap: break-word;
     margin-top: 10px;
     `
-const NoteTextArea = styled.textarea`
+const BlogTextArea = styled.textarea`
     display: flex; 
     flex-grow: 1;
     width: auto;
@@ -28,8 +27,6 @@ const NoteTextArea = styled.textarea`
     border: 1px solid rgb(240,240,240);
     `
 
-const TagsContainer = styled.div`
-    `
 const EditButtonContainer = styled.div`
     display: flex; 
     align-items: center;
@@ -44,60 +41,33 @@ const EditButtonStyle = styled.button`
     margin: 10px;
     font-size: large;
     `
-
-interface NoteEditorOperation {
-  addNote: (note: NoteContext) => void;
-  cancelEdit: () => void;
-}
-interface NoteEditorProps {
-  initialNoteContext: NoteContext;
-  availableTags: TagDetail[];
-  operations: NoteEditorOperation;
+interface BlogEditorProps {
+  saveBlog: (blog: BlogDetail) => void;
 }
 
-interface NoteEditorState {
-  noteContext: NoteContext
+interface BlogEditorState {
+  blog: BlogDetail
   uploading: boolean
 }
 
-const NoteEditor = (props: NoteEditorProps) => {
+const BlogEditor = (props: BlogEditorProps) => {
   const context = useAppContext()
 
   const defaultState = {
-    noteContext: props.initialNoteContext,
+    blog: {id: '',title: 'Untitled',content: '', lastModified: 1, createdAt: 2},
     uploading: false
   }
-  const [state, setState] = useState<NoteEditorState>(defaultState)
+  const [state, setState] = useState<BlogEditorState>(defaultState)
 
-  useEffect(() => {
-    setState(defaultState)
-  }, [props])
-
-  const cancelEdit = (event: any) => {
-    props.operations.cancelEdit()
-    setState(defaultState)
-  }
-
-  const addNote = (event: any) => {
-    props.operations.addNote(state.noteContext)
-  }
-
-  const changeTags = (tags: TagDetail[]) => {
-    setState({
-      ...state,
-      noteContext: {
-        note: state.noteContext.note,
-        tags: tags
-      }
-    })
+  const saveBlog = (event: any) => {
+    props.saveBlog(state.blog)
   }
 
   const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setState({
       ...state,
-      noteContext: {
-        note: {...state.noteContext.note, content: e.target.value},
-        tags: state.noteContext.tags
+      blog: {
+        ...state.blog, content: e.target.value
       }
     })
   }
@@ -129,13 +99,12 @@ const NoteEditor = (props: NoteEditorProps) => {
 
     if (files.length > 0) {
       setState({...state, uploading: true})
-      Promise.all(files.map(file => context.actions.saveFile(file.name, file.content))).then(_ => {
+      Promise.all(files.map(file => context.actions.saveImg(file.name, file.content))).then(_ => {
         const images = files.map(file => `![server:${file.name}](server:${file.name})`).join('\n\n')
         setState({
           uploading: false,
-          noteContext: {
-            note: {...state.noteContext.note, content: state.noteContext.note.content + '\n' + images},
-            tags: state.noteContext.tags
+          blog: {
+            ...state.blog, content: state.blog.content + '\n' + images
           }
         })
       }).catch((e) => {
@@ -147,21 +116,14 @@ const NoteEditor = (props: NoteEditorProps) => {
 
 
   return (
-    <NoteContainer >
-      <NoteTextArea onPaste={onPaste} autoFocus value={state.noteContext.note.content} onChange={changeContent} disabled={!props.operations || state.uploading} />
-      <TagsContainer >
-        <Tags
-          currentTags={state.noteContext.tags}
-          availableTags={props.availableTags}
-          tagChanges={changeTags} />
-      </TagsContainer>
+    <BlogContainer >
+      <BlogTextArea onPaste={onPaste} autoFocus value={state.blog.content} onChange={changeContent} disabled={state.uploading} />
       <EditButtonContainer>
-        <EditButtonStyle onClick={cancelEdit}>Cancel</EditButtonStyle>
         <EditButtonStyle
-          onClick={addNote}>OK</EditButtonStyle>
+          onClick={saveBlog}>OK</EditButtonStyle>
       </EditButtonContainer>
-    </NoteContainer >
+    </BlogContainer >
   )
 }
 
-export default NoteEditor;
+export default BlogEditor;
