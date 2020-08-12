@@ -1,52 +1,34 @@
 import React, {useState} from 'react';
 import styled from 'styled-components'
-import {turndownServie, useAppContext, BlogDetail} from '../../types'
+import {turndownServie, useAppContext, BlogContent} from '../../types'
 import uuidv4 from 'uuid/v4'
 
 const BlogContainer = styled.div`
     flex-grow: 1;
     display: flex;
     align-items: stretch;
-    justify-content: center;
+    justify-content: stretch;
     flex-flow: column;
     width: auto;
     height: auto;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    padding: 10px;
+    border: none;
     overflow-wrap: break-word;
-    margin-top: 10px;
     `
 const BlogTextArea = styled.textarea`
-    display: flex; 
     flex-grow: 1;
     width: auto;
-    min-height: 100px;
-    resize: vertical;
-    font-size: large;
-    border: 1px solid rgb(240,240,240);
-    `
-
-const EditButtonContainer = styled.div`
-    display: flex; 
-    align-items: center;
-    justify-content: center;
-    flex-flow: row;
-    width: auto;
     height: auto;
-    `
-
-const EditButtonStyle = styled.button`
-    width: 100px;
-    margin: 10px;
+    min-height: 100px;
+    resize: none;
     font-size: large;
+    border: none;
     `
 interface BlogEditorProps {
-  saveBlog: (blog: BlogDetail) => void;
+  content: BlogContent
+  onContentChanged: (content: BlogContent) => void;
 }
 
 interface BlogEditorState {
-  blog: BlogDetail
   uploading: boolean
 }
 
@@ -54,22 +36,13 @@ const BlogEditor = (props: BlogEditorProps) => {
   const context = useAppContext()
 
   const defaultState = {
-    blog: {id: '', title: 'Untitled', content: '', lastModified: 1, createdAt: 2},
+    content: props.content,
     uploading: false
   }
   const [state, setState] = useState<BlogEditorState>(defaultState)
 
-  const saveBlog = (event: any) => {
-    props.saveBlog(state.blog)
-  }
-
   const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setState({
-      ...state,
-      blog: {
-        ...state.blog, content: e.target.value
-      }
-    })
+    props.onContentChanged(e.target.value)
   }
 
   const onPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
@@ -103,10 +76,8 @@ const BlogEditor = (props: BlogEditorProps) => {
         const images = files.map(file => `![server:${file.name}](server:${file.name})`).join('\n\n')
         setState({
           uploading: false,
-          blog: {
-            ...state.blog, content: state.blog.content + '\n' + images
-          }
         })
+        props.onContentChanged(props.content + '\n' + images)
       }).catch((e) => {
         console.log(e)
         setState({...state, uploading: false})
@@ -117,11 +88,7 @@ const BlogEditor = (props: BlogEditorProps) => {
 
   return (
     <BlogContainer >
-      <BlogTextArea onPaste={onPaste} autoFocus value={state.blog.content} onChange={changeContent} disabled={state.uploading} />
-      <EditButtonContainer>
-        <EditButtonStyle
-          onClick={saveBlog}>OK</EditButtonStyle>
-      </EditButtonContainer>
+      <BlogTextArea onPaste={onPaste} autoFocus value={props.content} onChange={changeContent} disabled={state.uploading} />
     </BlogContainer >
   )
 }

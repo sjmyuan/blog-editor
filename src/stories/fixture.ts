@@ -7,6 +7,4 @@ export const blogDetail = {
   title: 'Untitled'
 }
 
-export const randomBlogContext = () => ({
-   ...blogDetail, id: uuidv4(), content: '# Hello World \n' + uuidv4() + '-' + blogDetail.content,
-})
+export const randomBlogContext = () => ('# Hello World \n' + uuidv4() + '-' + blogDetail.content)
