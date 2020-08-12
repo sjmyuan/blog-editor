@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components'
 import {turndownServie, useAppContext, BlogDetail} from '../../types'
 import uuidv4 from 'uuid/v4'
@@ -54,7 +54,7 @@ const BlogEditor = (props: BlogEditorProps) => {
   const context = useAppContext()
 
   const defaultState = {
-    blog: {id: '',title: 'Untitled',content: '', lastModified: 1, createdAt: 2},
+    blog: {id: '', title: 'Untitled', content: '', lastModified: 1, createdAt: 2},
     uploading: false
   }
   const [state, setState] = useState<BlogEditorState>(defaultState)

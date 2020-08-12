@@ -57,29 +57,29 @@ const Markdown = (props: MarkdownProps) => {
       })
     }
 
-    const updateMermaid = async (node: Node) => {
-      const svg = await new Promise((resolve, reject) => {
-        mermaid.mermaidAPI.render(`mermaid-${uuidv4()}`, node.value as string, (svg) => {
-          if (svg) {
-            resolve(svg)
-          }
-          else {
-            reject("failed to generate svg")
-          }
-        })
-      })
+    //const updateMermaid = async (node: Node) => {
+      //const svg = await new Promise((resolve, reject) => {
+        //mermaid.mermaidAPI.render(`mermaid-${uuidv4()}`, node.value as string, (svg) => {
+          //if (svg) {
+            //resolve(svg)
+          //}
+          //else {
+            //reject("failed to generate svg")
+          //}
+        //})
+      //})
 
-      node.type = 'html'
-      node.value = svg
-      node.lang = null
-      console.log(node)
-    }
+      //node.type = 'html'
+      //node.value = svg
+      //node.lang = null
+      //console.log(node)
+    //}
 
-    visit(tree, 'code', (node: Node, index: number, parent: Node) => {
-      if (node.lang === 'mermaid') {
-        nodeUpdates = [...nodeUpdates, updateMermaid(node)]
-      }
-    })
+    //visit(tree, 'code', (node: Node, index: number, parent: Node) => {
+      //if (node.lang === 'mermaid') {
+        //nodeUpdates = [...nodeUpdates, updateMermaid(node)]
+      //}
+    //})
 
     await Promise.all(nodeUpdates)
 
