@@ -72,8 +72,8 @@ const BlogEditor = (props: BlogEditorProps) => {
 
     if (files.length > 0) {
       setState({...state, uploading: true})
-      Promise.all(files.map(file => context.actions.saveImg(file.name, file.content))).then(_ => {
-        const images = files.map(file => `![server:${file.name}](server:${file.name})`).join('\n\n')
+      Promise.all(files.map(file => context.actions.saveImg(file.name, file.content))).then(url => {
+        const images = files.map(file => `![server:${file.name}](server:${url})`).join('\n\n')
         setState({
           uploading: false,
         })

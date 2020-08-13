@@ -7,19 +7,15 @@ import {withAuthenticator} from 'aws-amplify-react'; // or 'aws-amplify-react-na
 import Amplify from 'aws-amplify';
 // Get the aws resources configuration parameters
 import {awsConfig} from './types'; // if you are using Amplify CLI
-import Modal from 'react-modal'
 import {createGlobalStyle} from 'styled-components'
 
 createGlobalStyle`
 @import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
 `
-
-Modal.setAppElement('#root');
-
 Amplify.configure(awsConfig);
 
 const App: React.FC = () => {
-  const context = useAppState(AWSServerApi())
+  const context = useAppState(AWSServerApi('sjmyuan-ganggang-posts', 'sjmyuan-images', 'https://images.shangjiaming.com'))
   return (
     <AppContext.Provider value={context}>
       <Router>
