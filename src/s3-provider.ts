@@ -305,7 +305,7 @@ export default class AWSS3Provider implements StorageProvider {
 	 */
   private _prefix(config: any) {
     //all user will use the same prefix
-    return '/';
+    return '';
     //const {credentials, level} = config;
 
     //const customPrefix = config.customPrefix || {};
