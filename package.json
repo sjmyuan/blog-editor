@@ -4,6 +4,7 @@
   "private": false,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "@material-ui/lab": "^4.0.0-alpha.56",
     "@types/chrome": "^0.0.89",
     "@types/mermaid": "^8.2.1",
     "@types/moment": "^2.13.0",
