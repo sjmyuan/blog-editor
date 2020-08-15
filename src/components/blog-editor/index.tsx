@@ -28,18 +28,8 @@ interface BlogEditorProps {
   onContentChanged: (content: BlogContent) => void;
 }
 
-interface BlogEditorState {
-  uploading: boolean
-}
-
 const BlogEditor = (props: BlogEditorProps) => {
   const context = useAppContext()
-
-  const defaultState = {
-    content: props.content,
-    uploading: false
-  }
-  const [state, setState] = useState<BlogEditorState>(defaultState)
 
   const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     props.onContentChanged(e.target.value)
@@ -65,22 +55,21 @@ const BlogEditor = (props: BlogEditorProps) => {
       const item = event.clipboardData.items[i]
       if (['image/png', 'image/jpg', 'image/jpeg', 'image/gif'].some(e => e === item.type)) {
         const suffix = item.type.split('/')[1]
-        const fileName = `files/${uuidv4()}.${suffix}`
+        const fileName = `${uuidv4()}.${suffix}`
         files.push({name: fileName, content: item.getAsFile() as File})
       }
     }
 
     if (files.length > 0) {
-      setState({...state, uploading: true})
+      context.actions.setProgess(true)
       Promise.all(files.map(file => context.actions.saveImg(file.name, file.content))).then(url => {
-        const images = files.map(file => `![server:${file.name}](server:${url})`).join('\n\n')
-        setState({
-          uploading: false,
-        })
+        const images = files.map(file => `![server:${file.name}](${url})`).join('\n\n')
         props.onContentChanged(props.content + '\n' + images)
       }).catch((e) => {
         console.log(e)
-        setState({...state, uploading: false})
+        context.actions.showError(e.toString())
+      }).finally(() => {
+        context.actions.setProgess(false)
       })
     }
   }
@@ -88,7 +77,7 @@ const BlogEditor = (props: BlogEditorProps) => {
 
   return (
     <BlogContainer >
-      <BlogTextArea onPaste={onPaste} autoFocus value={props.content} onChange={changeContent} disabled={state.uploading} />
+      <BlogTextArea onPaste={onPaste} autoFocus value={props.content} onChange={changeContent} />
     </BlogContainer >
   )
 }

@@ -35,7 +35,7 @@ export const AWSServerApi: (postBucket: string, imgBucket: string, imgHost: stri
       await Storage.put(`${blog.id}.md`, blogHeader + blog.content, {bucket: postBucket})
     },
     saveImg: async (key: string, content: File) => {
-      return await Storage.put(key, content, imgBucket).then(() => `imgHost/${key}`)
+      return await Storage.put(key, content, {bucket: imgBucket}).then(() => `${imgHost}/${key}`)
     }
   })
 
@@ -91,11 +91,13 @@ export interface AppActions {
   saveImg: (key: string, img: File) => Promise<string>
   showInfo: (message?: string) => void
   showError: (message?: string) => void
+  setProgess: (inProgress: boolean) => void
 }
 
 export interface AppInfo {
   info?: string
   error?: string
+  inProgress: boolean
 }
 
 export interface MemoryAppContext {
@@ -105,14 +107,15 @@ export interface MemoryAppContext {
 
 
 export const useAppState = (api: ServerApi) => {
-  const [state, setState] = useState<AppInfo>({})
+  const [state, setState] = useState<AppInfo>({inProgress: false})
 
   const getActions: () => AppActions = () => {
     return {
       saveBlog: api.saveBlog,
       saveImg: api.saveImg,
       showInfo: (message?: string) => setState({...state, info: message}),
-      showError: (message?: string) => setState({...state, error: message})
+      showError: (message?: string) => setState({...state, error: message}),
+      setProgess: (inProgress: boolean) => setState({...state, inProgress: inProgress})
     }
   }
 
@@ -120,12 +123,13 @@ export const useAppState = (api: ServerApi) => {
 };
 
 export const AppContext = React.createContext<{state: AppInfo, actions: AppActions}>({
-  state: {}
+  state: {inProgress: false}
   , actions: {
     saveBlog: async (blog: BlogDetail) => {},
     saveImg: async (key: string, img: File) => {return ''},
     showInfo: () => {},
-    showError: () => {}
+    showError: () => {},
+    setProgess: (inProgress: boolean) => {}
   }
 });
 

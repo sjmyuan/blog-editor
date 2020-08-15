@@ -8,11 +8,12 @@ import {MemoryRouter} from 'react-router';
 
 const Example = () => {
   const context = {
-    state: {info: 'This is info message', error: 'This is error message'}, actions: {
+    state: {info: 'This is info message', error: 'This is error message', inProgress: false}, actions: {
       saveBlog: async (blog: BlogDetail) => {action('saveBlog')},
       saveImg: async (key: string, img: File) => {action('saveImg'); return ''},
       showInfo: (message?: string) => {action('showInfo')},
-      showError: (message?: string) => {action('showError')}
+      showError: (message?: string) => {action('showError')},
+      setProgess: (inProgress: boolean) => {action('setProgess')}
     }
   }
   return (<AppContext.Provider value={context}>

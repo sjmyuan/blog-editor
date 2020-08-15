@@ -55,7 +55,6 @@ const InProgressContainer = styled.div<{inProgress: boolean}>`
 
 interface HomePageState {
   blog: BlogDetail
-  inProgress: boolean
 }
 
 const HomePage = () => {
@@ -65,16 +64,15 @@ const HomePage = () => {
       id: uuidv4(),
       title: 'Untitled',
       content: ''
-    },
-    inProgress: false
+    }
   })
 
   const saveBlog = () => {
-    setState({...state, inProgress: true})
+    context.actions.setProgess(true)
     context.actions.saveBlog(state.blog)
       .then(() => context.actions.showInfo('Succeed to save blog!'))
       .catch(e => context.actions.showError(e.toString())).finally(() => {
-        setState({...state, inProgress: false})
+        context.actions.setProgess(false)
       })
   }
 
@@ -109,7 +107,7 @@ const HomePage = () => {
           <Button variant='contained' color='primary' onClick={saveBlog}> Save </Button>
         </OperationContainer>
       </ResponsiveGridLayout>
-      <InProgressContainer inProgress={state.inProgress}>
+      <InProgressContainer inProgress={context.state.inProgress}>
         <CircularProgress />
       </InProgressContainer>
     </div >
