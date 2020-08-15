@@ -23,7 +23,7 @@ export interface BlogDetail {
 
 export interface ServerApi {
   saveBlog: (blog: BlogDetail) => Promise<void>;
-  saveImg: (key: string, img: File) => Promise<string>
+  saveImg: (key: string, img: Blob) => Promise<string>
 }
 
 export const AWSServerApi: (postBucket: string, imgBucket: string, imgHost: string) => ServerApi =
@@ -34,7 +34,7 @@ export const AWSServerApi: (postBucket: string, imgBucket: string, imgHost: stri
 
       await Storage.put(`${blog.id}.md`, blogHeader + blog.content, {bucket: postBucket})
     },
-    saveImg: async (key: string, content: File) => {
+    saveImg: async (key: string, content: Blob) => {
       return await Storage.put(key, content, {bucket: imgBucket}).then(() => `${imgHost}/${key}`)
     }
   })
@@ -88,7 +88,7 @@ export const awsConfig = {
 
 export interface AppActions {
   saveBlog: (blog: BlogDetail) => Promise<void>
-  saveImg: (key: string, img: File) => Promise<string>
+  saveImg: (key: string, img: Blob) => Promise<string>
   showInfo: (message?: string) => void
   showError: (message?: string) => void
   setProgess: (inProgress: boolean) => void
@@ -126,7 +126,7 @@ export const AppContext = React.createContext<{state: AppInfo, actions: AppActio
   state: {inProgress: false}
   , actions: {
     saveBlog: async (blog: BlogDetail) => {},
-    saveImg: async (key: string, img: File) => {return ''},
+    saveImg: async (key: string, img: Blob) => {return ''},
     showInfo: () => {},
     showError: () => {},
     setProgess: (inProgress: boolean) => {}

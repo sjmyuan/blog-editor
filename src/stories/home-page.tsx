@@ -10,7 +10,7 @@ const Example = () => {
   const context = {
     state: {info: 'This is info message', error: 'This is error message', inProgress: false}, actions: {
       saveBlog: async (blog: BlogDetail) => {action('saveBlog')},
-      saveImg: async (key: string, img: File) => {action('saveImg'); return ''},
+      saveImg: async (key: string, img: Blob) => {action('saveImg'); return ''},
       showInfo: (message?: string) => {action('showInfo')},
       showError: (message?: string) => {action('showError')},
       setProgess: (inProgress: boolean) => {action('setProgess')}

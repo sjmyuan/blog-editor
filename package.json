@@ -14,6 +14,7 @@
     "aws-amplify": "^1.1.40",
     "aws-amplify-react": "^2.4.4",
     "highlight.js": "^9.15.10",
+    "image-blob-reduce": "^1.0.6",
     "mermaid": "^8.4.2",
     "moment": "^2.27.0",
     "react": "^16.9.0",

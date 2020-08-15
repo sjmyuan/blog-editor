@@ -2,6 +2,17 @@ import React, {useState} from 'react';
 import styled from 'styled-components'
 import {turndownServie, useAppContext, BlogContent} from '../../types'
 import uuidv4 from 'uuid/v4'
+import reduce from 'image-blob-reduce'
+
+const imgReduce = reduce()
+
+imgReduce._create_blob = function (env: any) {
+  return this.pica.toBlob(env.out_canvas, 'image/jpeg', 0.8)
+    .then(function (blob: any) {
+      env.out_blob = blob;
+      return env;
+    });
+};
 
 const BlogContainer = styled.div`
     flex-grow: 1;
@@ -62,15 +73,17 @@ const BlogEditor = (props: BlogEditorProps) => {
 
     if (files.length > 0) {
       context.actions.setProgess(true)
-      Promise.all(files.map(file => context.actions.saveImg(file.name, file.content))).then(url => {
-        const images = files.map(file => `![server:${file.name}](${url})`).join('\n\n')
-        props.onContentChanged(props.content + '\n' + images)
-      }).catch((e) => {
-        console.log(e)
-        context.actions.showError(e.toString())
-      }).finally(() => {
-        context.actions.setProgess(false)
-      })
+      Promise.all(files.map(file =>
+        imgReduce.toBlob(file.content, {max: 480})
+          .then((blob: Blob) => context.actions.saveImg(file.name, blob as Blob))
+          .then((url: string) => `![server:${file.name}](${url})`)
+      )).then(markdowns => props.onContentChanged(props.content + '\n' + markdowns.join('\n\n')))
+        .catch((e) => {
+          console.log(e)
+          context.actions.showError(e.toString())
+        }).finally(() => {
+          context.actions.setProgess(false)
+        })
     }
   }
 
