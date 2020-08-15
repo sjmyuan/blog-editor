@@ -23,6 +23,7 @@ const ItemContainer = styled.div`
     justify-content: stretch;
     flex-flow: column;
     border: 1px solid;
+    overflow: scroll;
     `
 const TitleContainer = styled.div`
     display: flex;
@@ -76,6 +77,22 @@ const HomePage = () => {
       })
   }
 
+  const largeLayout = [
+    {i: 'title', x: 0, y: 0, w: 2, h: 0.2},
+    {i: 'editor', x: 0, y: 1, w: 1, h: 2},
+    {i: 'preview', x: 1, y: 1, w: 1, h: 2},
+    {i: 'operation', x: 0, y: 2, w: 2, h: 0.5},
+  ];
+
+  const smallLayout = [
+    {i: 'title', x: 0, y: 0, w: 1, h: 0.2},
+    {i: 'editor', x: 0, y: 1, w: 1, h: 2},
+    {i: 'preview', x: 0, y: 2, w: 1, h: 2},
+    {i: 'operation', x: 0, y: 3, w: 1, h: 0.5},
+  ];
+
+  const layouts = {lg: largeLayout, md: largeLayout, sm: smallLayout, xs: smallLayout, xxs: smallLayout}
+
   return (
     <div>
       <Snackbar anchorOrigin={{vertical: 'top', horizontal: 'center'}} open={!!context.state.info} autoHideDuration={6000} onClose={() => context.actions.showInfo()}>
@@ -89,21 +106,23 @@ const HomePage = () => {
         </Alert>
       </Snackbar>
       <ResponsiveGridLayout className='layout'
+        layouts={layouts}
         breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
-        cols={{lg: 2, md: 2, sm: 2, xs: 1, xxs: 1}}
+        cols={{lg: 2, md: 2, sm: 1, xs: 1, xxs: 1}}
         isDraggable={false}
         isDroppable={false}
         isResizable={false}
         compactType={'vertical'}>
-        <TitleContainer key='title' data-grid={{x: 0, y: 0, w: 2, h: 0.2}}>
+        <TitleContainer key='title' >
           <input type='text' value={state.blog.title} onChange={(x) => setState({...state, blog: {...state.blog, title: x.target.value}})} />
         </TitleContainer>
-        <ItemContainer key='editor' data-grid={{x: 0, y: 1, w: 1, h: 2}}> <BlogEditor content={state.blog.content} onContentChanged={(x) => setState({...state, blog: {...state.blog, content: x}})} />
+        <ItemContainer key='editor' >
+          <BlogEditor content={state.blog.content} onContentChanged={(x) => setState({...state, blog: {...state.blog, content: x}})} />
         </ItemContainer>
-        <ItemContainer key='preview' data-grid={{x: 1, y: 1, w: 1, h: 2}}>
+        <ItemContainer key='preview' >
           <BlogPreview content={state.blog.content} />
         </ItemContainer>
-        <OperationContainer key='operation' data-grid={{x: 0, y: 2, w: 2, h: 1}}>
+        <OperationContainer key='operation'>
           <Button variant='contained' color='primary' onClick={saveBlog}> Save </Button>
         </OperationContainer>
       </ResponsiveGridLayout>

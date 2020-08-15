@@ -7,7 +7,7 @@ import reduce from 'image-blob-reduce'
 const imgReduce = reduce()
 
 imgReduce._create_blob = function (env: any) {
-  return this.pica.toBlob(env.out_canvas, 'image/jpeg', 0.8)
+  return this.pica.toBlob(env.out_canvas, 'image/jpeg', 0.95)
     .then(function (blob: any) {
       env.out_blob = blob;
       return env;

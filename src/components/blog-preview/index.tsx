@@ -14,6 +14,7 @@ const BlogContainer = styled.div`
     border: 1px solid transparent;
     border-radius: 8px;
     overflow-wrap: break-word;
+    overflow: scroll;
     `
 interface BlogPreviewProps {
   content: BlogContent
