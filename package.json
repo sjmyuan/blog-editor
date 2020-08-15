@@ -4,6 +4,7 @@
   "private": false,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@types/chrome": "^0.0.89",
     "@types/mermaid": "^8.2.1",
@@ -15,6 +16,7 @@
     "aws-amplify-react": "^2.4.4",
     "highlight.js": "^9.15.10",
     "image-blob-reduce": "^1.0.6",
+    "material-ui-dropzone": "^3.3.1",
     "mermaid": "^8.4.2",
     "moment": "^2.27.0",
     "react": "^16.9.0",

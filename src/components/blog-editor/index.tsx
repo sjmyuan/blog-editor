@@ -1,8 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, ChangeEvent} from 'react';
 import styled from 'styled-components'
 import {turndownServie, useAppContext, BlogContent} from '../../types'
 import uuidv4 from 'uuid/v4'
 import reduce from 'image-blob-reduce'
+import {makeStyles, createStyles, Theme} from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    input: {
+      display: 'none',
+    },
+  }),
+);
 
 const imgReduce = reduce()
 
@@ -25,6 +37,13 @@ const BlogContainer = styled.div`
     border: none;
     overflow-wrap: break-word;
     `
+const BlogButtonContainer = styled.div`
+    display: flex;
+    flex-flow: row nowrap;
+    width: auto;
+    height: auto;
+    border-bottom: 1px solid;
+    `
 const BlogTextArea = styled.textarea`
     flex-grow: 1;
     width: auto;
@@ -42,8 +61,27 @@ interface BlogEditorProps {
 const BlogEditor = (props: BlogEditorProps) => {
   const context = useAppContext()
 
+  const classes = useStyles()
+
   const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     props.onContentChanged(e.target.value)
+  }
+
+  const uploadImg = (files: {name: string, content: File}[]) => {
+    if (files.length > 0) {
+      context.actions.setProgess(true)
+      Promise.all(files.map(file =>
+        imgReduce.toBlob(file.content, {max: 480})
+          .then((blob: Blob) => context.actions.saveImg(file.name, blob as Blob))
+          .then((url: string) => `![server:${file.name}](${url})`)
+      )).then(markdowns => props.onContentChanged(props.content + '\n' + markdowns.join('\n\n')))
+        .catch((e) => {
+          console.log(e)
+          context.actions.showError(e.toString())
+        }).finally(() => {
+          context.actions.setProgess(false)
+        })
+    }
   }
 
   const onPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
@@ -72,24 +110,32 @@ const BlogEditor = (props: BlogEditorProps) => {
     }
 
     if (files.length > 0) {
-      context.actions.setProgess(true)
-      Promise.all(files.map(file =>
-        imgReduce.toBlob(file.content, {max: 480})
-          .then((blob: Blob) => context.actions.saveImg(file.name, blob as Blob))
-          .then((url: string) => `![server:${file.name}](${url})`)
-      )).then(markdowns => props.onContentChanged(props.content + '\n' + markdowns.join('\n\n')))
-        .catch((e) => {
-          console.log(e)
-          context.actions.showError(e.toString())
-        }).finally(() => {
-          context.actions.setProgess(false)
-        })
+      uploadImg(files)
     }
   }
+
+  const handleUploadClick = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      var file = event.target.files[0];
+      if (file) {
+        const suffix = file.type.split('/')[1]
+        const fileName = `${uuidv4()}.${suffix}`
+        uploadImg([{name: fileName, content: file}])
+      }
+    }
+  };
 
 
   return (
     <BlogContainer >
+      <BlogButtonContainer>
+        <input accept="image/*" className={classes.input} id="icon-button-file" type="file" onChange={handleUploadClick} />
+        <label htmlFor="icon-button-file">
+          <IconButton color="primary" aria-label="upload picture" component="span">
+            <PhotoCamera />
+          </IconButton>
+        </label>
+      </BlogButtonContainer>
       <BlogTextArea onPaste={onPaste} autoFocus value={props.content} onChange={changeContent} />
     </BlogContainer >
   )
