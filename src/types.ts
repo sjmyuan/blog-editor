@@ -65,7 +65,7 @@ export const awsConfig = {
     // Note: if the secure flag is set to true, then the cookie transmission requires a secure protocol
     cookieStorage: {
       // REQUIRED - Cookie domain (only required if cookieStorage is provided)
-      domain: 'editor.shangjiaming.com',
+      domain: 'editor.shangshunan.com',
       // OPTIONAL - Cookie path
       path: '/',
       // OPTIONAL - Cookie expiration in days
