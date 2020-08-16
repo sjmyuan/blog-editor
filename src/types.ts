@@ -30,7 +30,7 @@ export const AWSServerApi: (postBucket: string, imgBucket: string, imgHost: stri
   (postBucket: string, imgBucket: string, imgHost: string) => ({
     saveBlog: async (blog: BlogDetail) => {
 
-      const blogHeader = `---\ntitle:${blog.title}\ndate:${moment().format('YYYY-MM-DD HH:mm:ss')}\n---\n\n`
+      const blogHeader = `---\ntitle: ${blog.title}\ndate: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n---\n\n`
 
       await Storage.put(`${blog.id}.md`, blogHeader + blog.content, {bucket: postBucket})
     },
