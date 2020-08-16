@@ -8,12 +8,23 @@ import BlogPreview from '../blog-preview'
 import {BlogDetail, useAppContext} from '../../types';
 import Button from '@material-ui/core/Button';
 import uuidv4 from 'uuid/v4'
-import {CircularProgress, Snackbar} from '@material-ui/core';
+import {CircularProgress, Snackbar, Backdrop} from '@material-ui/core';
 import MuiAlert, {AlertProps} from '@material-ui/lab/Alert';
+import {makeStyles, createStyles, Theme} from '@material-ui/core/styles';
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
+
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
+    },
+  }),
+);
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -37,23 +48,8 @@ const OperationContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-flow: column;
-    `
-
-const InProgressContainer = styled.div<{inProgress: boolean}>`
-    position: fixed;
-    display: ${props => props.inProgress ? 'flex' : 'none'};
     flex-flow: row nowrap;
-    align-items: center;
-    justify-content: center;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    z-index: 10;
     `
-
-
 
 interface HomePageState {
   blog: BlogDetail
@@ -80,20 +76,22 @@ const HomePage = () => {
   }
 
   const largeLayout = [
-    {i: 'title', x: 0, y: 0, w: 2, h: 0.2},
-    {i: 'editor', x: 0, y: 1, w: 1, h: 2},
-    {i: 'preview', x: 1, y: 1, w: 1, h: 2},
+    {i: 'title', x: 0, y: 0, w: 2, h: 0.3},
+    {i: 'editor', x: 0, y: 1, w: 1, h: 4},
+    {i: 'preview', x: 1, y: 1, w: 1, h: 4},
     {i: 'operation', x: 0, y: 2, w: 2, h: 0.5},
   ];
 
   const smallLayout = [
-    {i: 'title', x: 0, y: 0, w: 1, h: 0.2},
-    {i: 'editor', x: 0, y: 1, w: 1, h: 2},
-    {i: 'preview', x: 0, y: 2, w: 1, h: 2},
+    {i: 'title', x: 0, y: 0, w: 1, h: 0.3},
+    {i: 'editor', x: 0, y: 1, w: 1, h: 4},
+    {i: 'preview', x: 0, y: 2, w: 1, h: 4},
     {i: 'operation', x: 0, y: 3, w: 1, h: 0.5},
   ];
 
   const layouts = {lg: largeLayout, md: largeLayout, sm: smallLayout, xs: smallLayout, xxs: smallLayout}
+
+  const classes = useStyles()
 
   return (
     <div>
@@ -128,9 +126,9 @@ const HomePage = () => {
           <Button variant='contained' color='primary' onClick={saveBlog} disabled={!state.blog.title || state.blog.title === ''}> Save </Button>
         </OperationContainer>
       </ResponsiveGridLayout>
-      <InProgressContainer inProgress={context.state.inProgress}>
+      <Backdrop className={classes.backdrop} open={context.state.inProgress}>
         <CircularProgress />
-      </InProgressContainer>
+      </Backdrop>
     </div >
   )
 }
