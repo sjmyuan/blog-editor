@@ -16,6 +16,8 @@ interface StorageOptions {
 /**
  * Provide storage methods to use AWS S3
  */
+
+/*eslint @typescript-eslint/no-unused-vars: 0*/
 export default class AWSS3Provider implements StorageProvider {
   static CATEGORY = 'Storage';
   static PROVIDER_NAME = 'AWSS3';
@@ -76,7 +78,7 @@ export default class AWSS3Provider implements StorageProvider {
     }
 
     const opt = Object.assign({}, this._config, config);
-    const {bucket, download, track, expires} = opt;
+    const {bucket, download, _, expires} = opt;
     const prefix = this._prefix(opt);
     const final_key = prefix + key;
     const s3 = this._createS3(opt);
@@ -127,7 +129,7 @@ export default class AWSS3Provider implements StorageProvider {
     }
 
     const opt = Object.assign({}, this._config, config);
-    const {bucket, track, progressCallback} = opt;
+    const {bucket, _, progressCallback} = opt;
     const {
       contentType,
       contentDisposition,
@@ -218,7 +220,7 @@ export default class AWSS3Provider implements StorageProvider {
     }
 
     const opt = Object.assign({}, this._config, config);
-    const {bucket, track} = opt;
+    const {bucket, _} = opt;
 
     const prefix = this._prefix(opt);
     const final_key = prefix + key;
@@ -253,7 +255,7 @@ export default class AWSS3Provider implements StorageProvider {
     }
 
     const opt = Object.assign({}, this._config, config);
-    const {bucket, track} = opt;
+    const {bucket, _} = opt;
 
     const prefix = this._prefix(opt);
     const final_path = prefix + path;

@@ -30,6 +30,7 @@ const TitleContainer = styled.div`
     align-items: stretch;
     justify-content: center;
     flex-flow: column;
+    font-size: large;
     `
 
 const OperationContainer = styled.div`
@@ -72,7 +73,8 @@ const HomePage = () => {
     context.actions.setProgess(true)
     context.actions.saveBlog(state.blog)
       .then(() => context.actions.showInfo('Succeed to save blog!'))
-      .catch(e => context.actions.showError(e.toString())).finally(() => {
+      .catch(e => context.actions.showError(e.toString()))
+      .finally(() => {
         context.actions.setProgess(false)
       })
   }

@@ -1,10 +1,9 @@
-import React, {useState, ChangeEvent} from 'react';
+import React, {ChangeEvent} from 'react';
 import styled from 'styled-components'
 import {turndownServie, useAppContext, BlogContent} from '../../types'
 import uuidv4 from 'uuid/v4'
 import reduce from 'image-blob-reduce'
 import {makeStyles, createStyles, Theme} from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
