@@ -68,17 +68,18 @@ const BlogEditor = (props: BlogEditorProps) => {
 
   const uploadImg = (files: {name: string, content: File}[]) => {
     if (files.length > 0) {
-      context.actions.setProgess(true)
+      context.actions.startProcess()
       Promise.all(files.map(file =>
         imgReduce.toBlob(file.content, {max: 480})
           .then((blob: Blob) => context.actions.saveImg(file.name, blob as Blob))
           .then((url: string) => `![server:${file.name}](${url})`)
-      )).then(markdowns => props.onContentChanged(props.content + '\n' + markdowns.join('\n\n')))
+      )).then(markdowns => {
+        props.onContentChanged(props.content + '\n' + markdowns.join('\n\n'))
+        context.actions.showInfo('Success')
+      })
         .catch((e) => {
           console.log(e)
-          context.actions.showError(e.toString())
-        }).finally(() => {
-          context.actions.setProgess(false)
+          context.actions.showError('Failed to upload image')
         })
     }
   }

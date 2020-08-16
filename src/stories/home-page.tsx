@@ -13,7 +13,7 @@ const Example = () => {
       saveImg: async (key: string, img: Blob) => {action('saveImg'); return ''},
       showInfo: (message?: string) => {action('showInfo')},
       showError: (message?: string) => {action('showError')},
-      setProgess: (inProgress: boolean) => {action('setProgess')}
+      startProcess: () => {action('startProcess')}
     }
   }
   return (<AppContext.Provider value={context}>

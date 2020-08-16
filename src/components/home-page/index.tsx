@@ -61,22 +61,22 @@ interface HomePageState {
 
 const HomePage = () => {
   const context = useAppContext()
-  const [state, setState] = useState<HomePageState>({
+  const defaultState = {
     blog: {
       id: uuidv4(),
-      title: 'Untitled',
       content: ''
     }
-  })
+  }
+  const [state, setState] = useState<HomePageState>(defaultState)
 
   const saveBlog = () => {
-    context.actions.setProgess(true)
+    context.actions.startProcess()
     context.actions.saveBlog(state.blog)
-      .then(() => context.actions.showInfo('Succeed to save blog!'))
-      .catch(e => context.actions.showError(e.toString()))
-      .finally(() => {
-        context.actions.setProgess(false)
+      .then(() => {
+        context.actions.showInfo('Succeed to save blog!')
+        setState(defaultState)
       })
+      .catch(e => context.actions.showError(e.toString()))
   }
 
   const largeLayout = [
@@ -116,7 +116,7 @@ const HomePage = () => {
         isResizable={false}
         compactType={'vertical'}>
         <TitleContainer key='title' >
-          <input type='text' value={state.blog.title} onChange={(x) => setState({...state, blog: {...state.blog, title: x.target.value}})} />
+          <input placeholder='Untitled' type='text' value={state.blog.title ? state.blog.title : ''} onChange={(x) => setState({...state, blog: {...state.blog, title: x.target.value}})} />
         </TitleContainer>
         <ItemContainer key='editor' >
           <BlogEditor content={state.blog.content} onContentChanged={(x) => setState({...state, blog: {...state.blog, content: x}})} />
@@ -125,7 +125,7 @@ const HomePage = () => {
           <BlogPreview content={state.blog.content} />
         </ItemContainer>
         <OperationContainer key='operation'>
-          <Button variant='contained' color='primary' onClick={saveBlog}> Save </Button>
+          <Button variant='contained' color='primary' onClick={saveBlog} disabled={!state.blog.title || state.blog.title === ''}> Save </Button>
         </OperationContainer>
       </ResponsiveGridLayout>
       <InProgressContainer inProgress={context.state.inProgress}>

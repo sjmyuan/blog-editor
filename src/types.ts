@@ -17,7 +17,7 @@ export type Instant = number;
 
 export interface BlogDetail {
   id: BlogId;
-  title: string;
+  title?: string;
   content: BlogContent;
 }
 
@@ -30,7 +30,7 @@ export const AWSServerApi: (postBucket: string, imgBucket: string, imgHost: stri
   (postBucket: string, imgBucket: string, imgHost: string) => ({
     saveBlog: async (blog: BlogDetail) => {
 
-      const blogHeader = `---\ntitle: ${blog.title}\ndate: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n---\n\n`
+      const blogHeader = `---\ntitle: ${blog.title && blog.title !== '' ? blog.title : 'Untitled'}\ndate: ${moment().format('YYYY-MM-DD HH:mm:ss')}\n---\n\n`
 
       await Storage.put(`${blog.id}.md`, blogHeader + blog.content, {bucket: postBucket})
     },
@@ -91,7 +91,7 @@ export interface AppActions {
   saveImg: (key: string, img: Blob) => Promise<string>
   showInfo: (message?: string) => void
   showError: (message?: string) => void
-  setProgess: (inProgress: boolean) => void
+  startProcess: () => void
 }
 
 export interface AppInfo {
@@ -113,9 +113,9 @@ export const useAppState = (api: ServerApi) => {
     return {
       saveBlog: api.saveBlog,
       saveImg: api.saveImg,
-      showInfo: (message?: string) => setState({...state, info: message}),
-      showError: (message?: string) => setState({...state, error: message}),
-      setProgess: (inProgress: boolean) => setState({...state, inProgress: inProgress})
+      showInfo: (message?: string) => setState({...state, inProgress: false, info: message}),
+      showError: (message?: string) => setState({...state, inProgress: false, error: message}),
+      startProcess: () => setState({...state, inProgress: true})
     }
   }
 
@@ -129,7 +129,7 @@ export const AppContext = React.createContext<{state: AppInfo, actions: AppActio
     saveImg: async (key: string, img: Blob) => {return ''},
     showInfo: () => {},
     showError: () => {},
-    setProgess: (inProgress: boolean) => {}
+    startProcess: () => {}
   }
 });
 
